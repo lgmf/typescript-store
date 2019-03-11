@@ -9,8 +9,9 @@ export type Reducers = Reducer[];
 type Subscriber = (state: any) => any;
 export type Subscribers = Subscriber[];
 
-export class Store {
+export type Subscription = { unsubscribe: Function }
 
+export class Store {
   private subscribers: Subscribers = [];
   private reducers: Reducers;
   private _state: any;
@@ -24,7 +25,7 @@ export class Store {
     return this._state;
   }
 
-  subscribe(fn: Subscriber) {
+  subscribe(fn: Subscriber): Subscription {
     this.subscribers = [...this.subscribers, fn];
     fn(this.state);
 
