@@ -1,19 +1,37 @@
 
 import { Action } from './store';
-import { ADD_TODO } from './actions';
+import { ADD_TODO, INCREMENT } from './actions';
+import { TodoState } from '../models/state';
 
-export const todoReducer = (state: any, action: Action) => {
+const initialState: TodoState = {
+  data: []
+};
+
+export function todoReducer(state = initialState, action: Action) {
   switch (action.type) {
     case ADD_TODO: {
       return {
         ...state,
-        todos: [
-          ...state.todos,
+        data: [
+          ...state.data,
           action.payload
         ]
-      }; 
+      };
     }
-    default:
-      return state;
   }
+
+  return state;
+}
+
+export function counterReducer(state = { count: 0 }, action: Action) {
+  switch (action.type) {
+    case INCREMENT: {
+      return {
+        ...state,
+        count: state.count + 1
+      }
+    }
+  }
+
+  return state;
 }

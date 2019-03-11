@@ -1,59 +1,59 @@
 export interface Action {
   type: string;
-  payload: any;
+  payload?: any;
 }
 
-type Reducer = [
-  { [key: string]: (state: any, action: Action) => any }
-];
+type Reducer = { [key: string]: (state: any, action: Action) => any };
+export type Reducers = Reducer[];
 
-type Subscriber = { 
-  [key: string]: Function[]
-};
+type Subscriber = (state: any) => any;
+export type Subscribers = Subscriber[];
 
-export class Store<T> {
+export class Store {
 
-  private subscribers: Subscriber = {};
-  private reducers: Reducer;
-  private _state: T;
+  private subscribers: Subscribers = [];
+  private reducers: Reducers;
+  private _state: any;
 
-  constructor(initialState: T, reducers: Reducer) { 
-    this._state = initialState;
+  constructor(reducers: Reducers) {
     this.reducers = reducers;
+    this.reduce({}, { type: null });
   }
 
-  get state(): T {
+  get state() {
     return this._state;
   }
 
-  subscribe<S>(key: string, fn: (value: S) => any) {
-    const value = this.state[key] as S;
-    const subs = this.subscribers[key] || [];
+  subscribe(fn: Subscriber) {
+    this.subscribers = [...this.subscribers, fn];
+    fn(this.state);
 
-    fn(value);
-
-    this.subscribers = {
-      ...this.subscribers,
-      [key]: [ ...subs, fn ]
+    return {
+      unsubscribe: () => this.unsubscribe(fn)
     }
   }
 
   dispatch(action: Action) {
+    this.reduce(this.state, action);
+  }
+
+  private reduce(state, action) {
     this.reducers.forEach(reducer => {
       const channel = Object.keys(reducer)[0];
       const fn = Object.values(reducer)[0];
-      const newState = fn(this.state, action);
+      const newState = fn(state[channel], action);
 
-      this._state = Object.assign({}, this._state, newState);
-      this.notify(channel);
+      this._state = Object.assign({}, this._state, { [channel]: newState });
+      this.notify();
     });
   }
 
-  private notify(channel: string) {
-    const subs = this.subscribers[channel] || [];
-    const value = this.state[channel];
+  private notify() {
+    this.subscribers.forEach(s => s(this.state));
+  }
 
-    subs.forEach(s => s(value));
+  private unsubscribe(subscriber) {
+    this.subscribers = this.subscribers.filter(s => s !== subscriber)
   }
 
 }

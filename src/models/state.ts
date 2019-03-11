@@ -1,5 +1,5 @@
 import { Todo } from './todo';
 
-export interface State {
-  todos: Todo[];
+export interface TodoState {
+  data: Todo[];
 }
