@@ -1,15 +1,23 @@
-import Counter from './components/counter';
+// Components
 import TodoList from './components/todoList';
-import { counterReducer, Reducers, Store, todoReducer } from './store/index';
+import AddTodo from './components/addTodo';
 
+// Store
+import { Reducers } from './store/models/index';
+import { todoReducer } from './store/reducers';
+import { Store } from './store/store';
+
+// Styles
 import './style.css';
 
 const reducers: Reducers = [
   { 'todos': todoReducer },
-  { 'counter': counterReducer }
+  // { 'counter': counterReducer }
 ];
 
 const store = new Store(reducers);
 
-Counter(store);
 TodoList(store);
+AddTodo(store);
+
+// Counter(store);

@@ -9,3 +9,12 @@ input {
   padding: 8px;
   font-size: 16px;
 }
+
+#add-todo {
+  display: flex;
+  justify-content: center;
+}
+
+#add-todo > input {
+  margin-right: 8px;
+}

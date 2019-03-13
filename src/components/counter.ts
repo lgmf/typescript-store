@@ -1,4 +1,5 @@
-import { Store, Increment } from "../store/index";
+import { Store } from '../store/store';
+import { Increment } from '../store/actions';
 
 export default (store: Store) => {
   const incrementBtn: HTMLButtonElement = document.querySelector('#increment-count');

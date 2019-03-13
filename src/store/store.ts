@@ -1,15 +1,4 @@
-export interface Action {
-  type: string;
-  payload?: any;
-}
-
-type Reducer = { [key: string]: (state: any, action: Action) => any };
-export type Reducers = Reducer[];
-
-type Subscriber = (state: any) => any;
-export type Subscribers = Subscriber[];
-
-export type Subscription = { unsubscribe: Function }
+import { Subscribers, Reducers, Subscriber, Subscription, Action } from './models/index';
 
 export class Store {
   private subscribers: Subscribers = [];
@@ -25,12 +14,12 @@ export class Store {
     return this._state;
   }
 
-  subscribe(fn: Subscriber): Subscription {
-    this.subscribers = [...this.subscribers, fn];
-    fn(this.state);
+  subscribe(subscriber: Subscriber): Subscription {
+    this.subscribers = [...this.subscribers, subscriber];
+    subscriber(this.state);
 
     return {
-      unsubscribe: () => this.unsubscribe(fn)
+      unsubscribe: () => this.unsubscribe(subscriber)
     }
   }
 
